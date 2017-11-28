@@ -40,8 +40,8 @@
     3.  Installation / Uninstallation
 ----------------------------------------
 
-    To install, simply run 'make' with superuser privileges.  There is no
-    compilation involved, so the scripts and other bits of the program will
+    To install, simply run 'make install' with superuser privileges.  There is
+    no compilation involved, so the scripts and other bits of the program will
     be copied to where they need to be.
 
     To remove the program and all its accessories, return to the directory to

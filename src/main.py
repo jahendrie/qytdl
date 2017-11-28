@@ -57,7 +57,7 @@ def main():
 
     app = QApplication( sys.argv )
 
-    app.setWindowIcon( Icons().get_icon( "application-icon" ))
+    app.setWindowIcon( Icons().get_icon( "application-icon", True ))
 
     win = MainWindow()
 

@@ -7,7 +7,7 @@ WINDOW_HEIGHT = 800
 
 
 def system_install_path():
-    return( "/opt/qytdl" )
+    return( "/usr/share/qytdl" )
 
 
 def get_data_dir():
