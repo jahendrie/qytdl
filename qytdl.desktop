@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=qYoutube-DL
+GenericName=Youtube Downloader
+Comment=Download videos using Youtube-DL
+Exec=qytdl
+Icon=/usr/share/qytdl/data/icons/application-icon.png
+Type=Application
+Categories=Internet;
