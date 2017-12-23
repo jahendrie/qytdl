@@ -80,6 +80,12 @@ class MainWindow( QMainWindow ):
         setDestAction.setStatusTip( "Choose your download directory" )
         setDestAction.triggered.connect( self.mainWidget.set_destination )
 
+        ##  Allow duplicates
+        self.dupeAction = QAction( "Allow duplicates", self )
+        self.dupeAction.setStatusTip( "Allow duplicate URLs in queue" )
+        self.dupeAction.setCheckable( True )
+        self.dupeAction.triggered.connect( self.check_dupe_box )
+
 
         ##  About action
         aboutAction = QAction( QIcon( get_icon( "help-about" )), "&About", self)
@@ -99,6 +105,7 @@ class MainWindow( QMainWindow ):
         editMenu = menuBar.addMenu( "&Edit" )
         editMenu.addAction( pasteAction )
         editMenu.addAction( setDestAction )
+        editMenu.addAction( self.dupeAction )
 
         helpMenu = menuBar.addMenu( "&Help" )
         helpMenu.addAction( aboutAction )
@@ -108,21 +115,30 @@ class MainWindow( QMainWindow ):
         self.mainWidget.load_urls( urls )
 
 
-    def write_config( self, opts ):
+    def write_config( self ):
 
-        write_config( opts )
+        self.opts[ "downloadDir" ] = self.mainWidget.destEdit.text()
+        self.opts[ "duplicates" ] = self.dupeAction.isChecked()
+
+        write_config( self.opts )
 
 
     def save_settings( self ):
 
-        self.write_config( self.opts )
+        self.write_config()
         self.statusBar().showMessage( "Settings saved", 2000 )
+
+
+    def check_dupe_box( self ):
+        self.opts[ "duplicates" ] = self.dupeAction.isChecked()
+        self.save_settings()
 
 
     def about( self ):
         aboutStr = """
         qYoutube-DL is a basic PyQt5 frontend to Youtube-DL.
 
+        Version:    0.9
         License:    GPLv3 - https://www.gnu.org/licenses/gpl-3.0.txt
         Author:     James Hendrie - hendrie.james@gmail.com
         Git:        https://github.com/jahendrie/qytdl

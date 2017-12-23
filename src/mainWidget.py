@@ -175,13 +175,31 @@ class MainWidget( QWidget ):
                 QLineEdit.Normal, "" )
 
         if ok and url != "":
-            self.listWidget.addItem( url )
+            self.add_url_to_list( url )
 
 
     def quick_add_item( self ):
         url = QApplication.clipboard().text()
         if url != "":
+            self.add_url_to_list( url )
+
+
+
+    def add_url_to_list( self, url ):
+
+        if self.parent.opts[ "duplicates" ] == True:
             self.listWidget.addItem( url )
+
+        else:
+            inList = False
+            for i in range( self.listWidget.count() ):
+                li = self.listWidget.item( i )
+                if li != None and li.text() == url:
+                    inList = True
+                    break
+
+            if not inList:
+                self.listWidget.addItem( url )
 
 
     def remove_item( self ):
@@ -192,9 +210,8 @@ class MainWidget( QWidget ):
 
     def write_config( self ):
 
-        self.parent.opts[ "downloadDir" ] = self.destEdit.text()
+        self.parent.write_config()
 
-        self.parent.write_config( self.parent.opts )
 
 
     def start_download( self ):

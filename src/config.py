@@ -4,7 +4,8 @@ import sys, os
 def default_opts():
     opts = {
             "downloadDir" : os.getenv( "HOME" ),
-            "format" : "22"
+            "format" : "22",
+            "duplicates" : False
             }
     
     return( opts )
@@ -44,15 +45,21 @@ def create_config( path, opts ):
         fp = open( path, "w" )
 
         ##  Download directory
-        fp.write( "# Path to directory where videos are saved\n\n" )
+        fp.write( "# Path to directory where videos are saved\n" )
         fp.write( "download_dir=%s\n\n" % opts[ "downloadDir" ] )
 
         ##  Format code
         fp.write("# Desired format code " )
         fp.write( "(use youtube-dl -F $URL to see format codes)\n")
         fp.write( "# default is 0 (autodetect best)\n" )
-        fp.write( "# 22 = 720p mp4\n\n" )
+        fp.write( "# 22 = 720p mp4\n" )
         fp.write( "format=%s\n\n" % opts[ "format" ] )
+
+
+        ##  Duplicates
+        fp.write( "# Allow duplicate URLs in queue (default 0 == no)\n" )
+        dupes = opts[ "duplicates" ]
+        fp.write( "allowDuplicates=%s\n\n" % ( '1' if dupes else '0' ))
 
         fp.close()
 
@@ -83,6 +90,16 @@ def read_options( fp, opts ):
         if "format=" in line:
             fmt = get_option( line )
             opts[ "format" ] = fmt
+
+        if "allowDuplicates=" in line:
+            dupes = False
+            dupeStr = get_option( line )
+            dupeStr = dupeStr.lower()
+
+            if dupeStr == "1" or dupeStr == "yes" or dupeStr == "true":
+                dupes = True
+
+            opts[ "duplicates" ] = dupes
 
 
 def read_config():
