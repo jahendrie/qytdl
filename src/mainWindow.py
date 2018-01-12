@@ -99,8 +99,9 @@ class MainWindow( QMainWindow ):
         ##  Create file menu
         fileMenu = menuBar.addMenu( "&File" )
         fileMenu.addAction( saveAction )
-        fileMenu.addAction( exitAction )
         fileMenu.addAction( goAction )
+        fileMenu.addSeparator()
+        fileMenu.addAction( exitAction )
 
         editMenu = menuBar.addMenu( "&Edit" )
         editMenu.addAction( pasteAction )
