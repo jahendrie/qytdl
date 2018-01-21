@@ -113,10 +113,10 @@ def read_config():
         fp.close()
 
     except FileNotFoundError:
-        create_config( path, opts )
+        create_config( cfg, opts )
 
     except PermissionError:
-        print( "ERROR:  Cannot read from '%s'." % path )
+        print( "ERROR:  Cannot read from '%s'." % cfg )
         print( "Unable to restore settings" )
 
 
