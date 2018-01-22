@@ -4,3 +4,5 @@
 
 2018-01-20      0.92    Fixed a bug with creating the config file that I very
                         stupidly missed.  Spotted by user 'imj0seph'.
+
+2018-01-22      0.93    Added a 'free space' label under the progress bar

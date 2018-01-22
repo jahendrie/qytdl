@@ -100,6 +100,10 @@ class MainWidget( QWidget ):
         self.progressBar = QProgressBar( self )
         self.progressBar.setTextVisible( False )
 
+        ##  The free space label
+        self.freeLabel = QLabel( self )
+        self.update_free_label()
+
 
         ##  Connect it up
         self.connect_all()
@@ -113,6 +117,11 @@ class MainWidget( QWidget ):
         dBox = QVBoxLayout()
         dBox.addLayout( dest, 1 )
         dBox.addWidget( self.formatBox )
+
+        ##  Free space
+        fBox = QHBoxLayout()
+        fBox.addWidget( QWidget(), 1 )
+        fBox.addWidget( self.freeLabel )
 
 
         ##  Buttons layout
@@ -139,6 +148,7 @@ class MainWidget( QWidget ):
         vbox.addLayout( lBox )
         vbox.addLayout( hbox )
         vbox.addWidget( self.progressBar )
+        vbox.addLayout( fBox )
 
         ##  Set the layout
         self.setLayout( vbox )
@@ -283,6 +293,9 @@ class MainWidget( QWidget ):
 
                 currentUrl += 1
 
+                ##  Update the free label
+                self.update_free_label()
+
             ##  Restore old cursor
             QApplication.restoreOverrideCursor()
 
@@ -306,3 +319,10 @@ class MainWidget( QWidget ):
         if downloadsDir != "":
             self.destEdit.setText( downloadsDir )
             self.parent.opts[ "downloadDir" ] = downloadsDir
+            self.update_free_label()
+
+
+
+    def update_free_label( self ):
+        freeSpace = get_free_space( self.parent.opts[ "downloadDir" ] )
+        self.freeLabel.setText( "%s free" % freeSpace )

@@ -68,3 +68,33 @@ def sys_downloads_path( paths ):
             if os.path.exists( p ):
                 return( p )
         return( home )
+
+
+
+def get_free_space( path ):
+
+    try:
+        s = os.statvfs( path )
+    except ( PermissionError, FileNotFoundError ):
+        return( "UNKNOWN" )
+
+    suffices = ( 'bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB' )
+    suffix = 0
+    freeSpace = s.f_frsize * s.f_bavail
+
+    ##  Get it down to a sane number
+    while( freeSpace > 1024 ):
+        freeSpace /= 1024
+        suffix += 1
+
+    ##  Just to be safe, I guess
+    if suffix >= len( suffices ):
+        freeSpace = s.f_frsize * s.f_bavail
+        suffix = 0
+
+    if suffix > 0:
+        freeSpaceStr = "%.02f %s" % ( freeSpace, suffices[ suffix ] )
+    else:
+        freeSpaceStr = "%d bytes" % freeSpace
+
+    return( freeSpaceStr )
