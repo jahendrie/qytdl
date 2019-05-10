@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import (QMainWindow, QDesktopWidget, qApp, QMessageBox )
+from PyQt5.QtWidgets import (QMainWindow, QDesktopWidget, qApp, QFileDialog,
+        QMessageBox )
 from PyQt5.QtGui import QIcon
 from PyQt5.Qt import QAction
 
@@ -49,10 +50,25 @@ class MainWindow( QMainWindow ):
         ########  Actions
 
         ##  Save
-        saveAction = QAction( QIcon( get_icon( "document-save" )), "&Save",self)
+        saveAction = QAction( QIcon( get_icon( "document-save" )),
+                "&Save Settings",self)
         saveAction.setShortcut( "Ctrl+S" )
         saveAction.setStatusTip( "Save current settings" )
         saveAction.triggered.connect( self.save_settings )
+
+        ##  Import playlist
+        importAction = QAction( QIcon( get_icon( "document-open")),
+                "&Import URLs", self )
+        importAction.setShortcut( "Ctrl+I" )
+        importAction.setStatusTip( "Import a saved list of URLs" )
+        importAction.triggered.connect( self.import_urls )
+
+        ##  Export playlist
+        exportAction = QAction( QIcon( get_icon( "document-save")),
+                "&Export URLs", self )
+        exportAction.setShortcut( "Ctrl+E" )
+        exportAction.setStatusTip( "Export URLs to a text file" )
+        exportAction.triggered.connect( self.export_urls )
 
         ##  Exit
         exitAction = QAction( QIcon( get_icon( "application-exit")),
@@ -99,6 +115,10 @@ class MainWindow( QMainWindow ):
         ##  Create file menu
         fileMenu = menuBar.addMenu( "&File" )
         fileMenu.addAction( saveAction )
+        fileMenu.addAction( exportAction )
+        fileMenu.addSeparator()
+        fileMenu.addAction( importAction )
+        fileMenu.addSeparator()
         fileMenu.addAction( goAction )
         fileMenu.addSeparator()
         fileMenu.addAction( exitAction )
@@ -111,6 +131,48 @@ class MainWindow( QMainWindow ):
         helpMenu = menuBar.addMenu( "&Help" )
         helpMenu.addAction( aboutAction )
 
+
+    def import_urls( self ):
+
+        dDir = self.mainWidget.destEdit.text()
+        filename, blank = QFileDialog.getOpenFileName( self, "Import URLs", dDir )
+        if filename != "":
+            try:
+
+                fin = open( filename, "r" )
+                rawUrls = fin.readlines()
+                fin.close()
+
+                urls = []
+                for r in rawUrls:
+                    urls.append( r.strip() )
+
+                self.load_urls( urls )
+
+                self.statusBar().showMessage( "URLs imported", 2000 )
+
+            except ( OSError, PermissionError, FileNotFoundError ):
+                print( "ERROR:  Cannot read from '%s'!  Unable to load URLs" %
+                        filename )
+
+    def export_urls( self ):
+
+        dDir = self.mainWidget.destEdit.text()
+        
+        filename, blank = QFileDialog.getSaveFileName( self, "Export URLs", dDir)
+        if filename != "":
+            try:
+                urls = self.mainWidget.get_urls()
+
+                fout = open( filename, "w" )
+                fout.writelines( urls )
+                fout.close()
+
+                self.statusBar().showMessage( "URLs exported", 2000 )
+
+            except ( OSError, PermissionError, FileNotFoundError ):
+                print( "ERROR:  Cannot write to '%s'!  Unable to export URLs" %
+                        filename )
 
     def load_urls( self, urls ):
         self.mainWidget.load_urls( urls )
@@ -139,7 +201,7 @@ class MainWindow( QMainWindow ):
         aboutStr = """
         qYoutube-DL is a basic PyQt5 frontend to Youtube-DL.
 
-        Version:    0.92
+        Version:    0.95
         License:    GPLv3 - https://www.gnu.org/licenses/gpl-3.0.txt
         Author:     James Hendrie - hendrie.james@gmail.com
         Git:        https://github.com/jahendrie/qytdl

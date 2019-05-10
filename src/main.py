@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 #===============================================================================
-#   qytdl   |   version 0.93    |   GPL v3      |   2018-01-22
+#   qytdl   |   version 0.95    |   GPL v3      |   2019-05-10
 #   James Hendrie               |   hendrie.james@gmail.com
 #
 #   PyQt5 front-end to Youtube-DL.
 #
 #   ---------------------------------------------------------------------------
 #
-#    Copyright (C) 2017, 2018 James Hendrie
+#    Copyright (C) 2017-2019 James Hendrie
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -32,8 +32,12 @@ from PyQt5.QtGui import QIcon
 from icons import Icons
 
 
+def print_version():
+    print( "qytdl, version 0.95" )
+    print( "James Hendrie <hendrie.james@gmail.com>" )
+
 def print_usage():
-    print( "qytdl [OPTION] [URLS]" )
+    print( "qytdl [OPTION/URLs]" )
 
 
 def print_help():
@@ -41,15 +45,52 @@ def print_help():
     print( "\nThis program is a minimal frontend to Youtube-DL.  With it, you" )
     print( "can build a queue of URLs for Youtube-DL to download to a specified" )
     print( "directory." )
+    print( "" )
+    print( "Options:" )
+    print( " -h or --help\t\tThis help text" )
+    print( " -V or --version\tVersion and author info" )
+    print( " - or --stdin\t\tRead URLs from stdin" )
 
 
 def main():
 
     urls = []
+
     if len( sys.argv ) > 1:
+
+        ##  If they want help
         if sys.argv[1] == "-h" or sys.argv[1] == "--help":
             print_help()
             return( 0 )
+
+        elif sys.argv[1] == "-V" or sys.argv[1] == "--version":
+            print_version()
+            return( 0 )
+
+        ##  If they're reading URLs from stdin
+        elif sys.argv[1] == '-' or sys.argv[1] == "--stdin":
+            rawUrls = sys.stdin.readlines()
+            for r in rawUrls:
+                urls.append( r.replace( ' ', '\n', -1 ).strip() )
+
+        ##  If they're importing URLs
+        elif os.path.exists( sys.argv[1] ):
+            try:
+
+                fin = open( sys.argv[1], "r" )
+                rawUrls = fin.readlines()
+                fin.close()
+
+                for r in rawUrls:
+                    urls.append( r.strip() )
+
+
+            except ( OSError, PermissionError, FileNotFoundError ):
+                print( "ERROR:  Cannot read from '%s'!  Aborting." %
+                        sys.argv[1] )
+                sys.exit( 1 )
+
+        ##  Running a bunch of URLs as args
         else:
             for arg in sys.argv[1:]:
                 urls.append( arg )

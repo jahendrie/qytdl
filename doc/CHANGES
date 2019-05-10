@@ -6,3 +6,5 @@
                         stupidly missed.  Spotted by user 'imj0seph'.
 
 2018-01-22      0.93    Added a 'free space' label under the progress bar
+
+2019-05-10      0.95    Added import/export URL capability, read from stdin

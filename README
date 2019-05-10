@@ -1,5 +1,5 @@
 ================================================================================
-    qytdl.py    |   version 0.93    |   GPL v3              |   2018-04-15
+    qytdl.py    |   version 0.95    |   GPL v3              |   2019-05-10
     James Hendrie                   |   hendrie dot james at gmail dot com
 ================================================================================
 
@@ -54,10 +54,22 @@
     4.  Usage
 ----------------------------------------
 
-Usage:  qytdl [OPTION] [List of URLs]
+Usage:
+    qytdl [OPTION]
+    Run with the given option to print help / see version
+
+    qytdl [LIST-OF-URLS]
+    Run it loading all given arguments as URLs
+
+    cat URL_FILE.txt | qytdl -
+    Read list of URLs from stdin
+    
 
 Options
-  -h		Prints help text
+    -h or --help        Prints help text
+    -V or --version     Print version and author info
+    - or --stdin        Read input from stdin
+    
 
 
 
@@ -71,6 +83,6 @@ Options
         hendrie.james@protonmail.com
 
     Sites:
-        http://www.someplacedumb.net/content/progs
         https://github.com/jahendrie
             https://github.com/jahendrie/qytdl    <-- This program!
+        http://www.someplacedumb.net/content/progs

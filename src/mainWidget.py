@@ -326,3 +326,13 @@ class MainWidget( QWidget ):
     def update_free_label( self ):
         freeSpace = get_free_space( self.parent.opts[ "downloadDir" ] )
         self.freeLabel.setText( "%s free" % freeSpace )
+
+
+    def get_urls( self ):
+
+        urls = []
+
+        for i in range( self.listWidget.count() ):
+            urls.append( self.listWidget.item( i ).text() + '\n' )
+        
+        return( urls )
