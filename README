@@ -30,9 +30,9 @@
     2.  Requirements
 ----------------------------------------
 
-    -   Python 3 (tested:  version 3.6.3)
-    -   PyQt5 (python-pyqt5) for Python 3 (tested:  version 5.9.2-1)
-    -   youtube-dl (tested: 2017.11.26-1)
+    -   Python 3 (tested:  version 3.7.3)
+    -   PyQt5 (python-pyqt5) for Python 3 (tested:  version 5.12.2)
+    -   youtube-dl (tested: 2019-04-30-1)
 
 
 
