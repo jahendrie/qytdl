@@ -8,3 +8,11 @@
 2018-01-22      0.93    Added a 'free space' label under the progress bar
 
 2019-05-10      0.95    Added import/export URL capability, read from stdin
+
+2019-09-27      0.96    Added profiles functionality, improved progress bars
+
+2019-09-28      0.97    Revamped fallback functionality, added per-profile modes
+                        Fixed version number, updated README
+
+2019-09-28      0.98    Changed module names to better adhere to Python style,
+                        tweaked profile options, changed cfg name and structure

@@ -16,7 +16,7 @@ DOCPATH=$(PREFIX)/share/doc/qytdl
 LICENSEPATH=$(PREFIX)/share/licenses/qytdl
 
 install:
-	install $(SRC)/*.py -D -t $(INSTALL_PATH)/src
+	find . -type f -exec install -Dm 755 "{}" "$(INSTALL_PATH)/{}" \;
 	install $(ICONS)/*.png -D -t $(INSTALL_PATH)/data/icons/
 	install $(DESKTOP_FILE) -D $(DESKTOP_PATH)/$(DESKTOP_FILE)
 	install README -D $(DOCPATH)/README

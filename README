@@ -1,5 +1,5 @@
 ================================================================================
-    qytdl.py    |   version 0.95    |   GPL v3              |   2019-05-10
+    qytdl.py    |   version 0.98    |   GPL v3              |   2019-09-28
     James Hendrie                   |   hendrie dot james at gmail dot com
 ================================================================================
 
@@ -7,7 +7,8 @@
     2.  Requirements
     3.  Installation / Uninstallation
     4.  Usage
-    5.  Contact, etc.
+    5.  Configuration
+    6.  Contact, etc.
 
 
 
@@ -18,9 +19,6 @@
     qytdl (long-form: qYoutube-DL) is a Qt frontend to Youtube-DL.  You can use
     it to build a queue of URLs, downloading the entire list when you've
     finished.
-    
-    There are currently only two quality options:  "auto" (best) and 720p.  The
-    program has no conversion capabilities.  'tis but a simple frontend, m'lord.
 
 
 
@@ -30,9 +28,9 @@
     2.  Requirements
 ----------------------------------------
 
-    -   Python 3 (tested:  version 3.7.3)
-    -   PyQt5 (python-pyqt5) for Python 3 (tested:  version 5.12.2)
-    -   youtube-dl (tested: 2019-04-30-1)
+    -   Python 3 (tested:  version 3.7.4)
+    -   PyQt5 (python-pyqt5) for Python 3 (tested:  version 5.13.0-1)
+    -   youtube-dl (tested: 2019.09.12.1)
 
 
 
@@ -40,14 +38,18 @@
     3.  Installation / Uninstallation
 ----------------------------------------
 
-    To install, simply run 'make install' with superuser privileges.  There is
-    no compilation involved, so the scripts and other bits of the program will
-    be copied to where they need to be.
+    3.1.    Make sure you have all of the prerequisite programs and libraries
+            installed.  This includes, but may not be limited to:
+            python3, PyQt5, youtube-dl
+            (Respective tested versions: 3.7.4, 5.13.0-1, 2019.19.12.1-1)
 
-    To remove the program and all its accessories, return to the directory to
-    which you originally extracted the tarball (or whichever directory has the
-    Makefile for this program) and type 'make uninstall', again with superuser
-    privileges.
+    3.2.    Either run the script (main.py) straight from the 'src' directory or
+            run 'make install' with superuser privileges from the extracted
+            tarball's top directory.
+
+    3.3.    To remove the program, return to the directory with the makefile
+            (where you extracted it initially) and run 'make uninstall', again
+            with superuser privileges.
 
 
 ----------------------------------------
@@ -69,12 +71,31 @@ Options
     -h or --help        Prints help text
     -V or --version     Print version and author info
     - or --stdin        Read input from stdin
+
+
+----------------------------------------
+    5.  Configuration
+----------------------------------------
+
+    There are two files that this program makes use of: qydtl.cfg and
+    profiles.xml.  Both are located in the configuration directory.
+
+    Windows:    %APPDATA%/qytdl
+    Linux:      $HOME/.config/qytdl
+
+    qytdl.cfg has the options that the program will launch with, if the file
+    exists and can be read.
+
+    profiles.xml contains a number of profiles that the user can make use of,
+    assuming they can be read properly by the program.  This file can be, and is
+    intended to be, modified by the user to fit his or her needs.  Look over the
+    file itself for more info.
     
 
 
 
 ----------------------------------------
-    5.  Contact, etc.
+    6.  Contact, etc.
 ----------------------------------------
 
     Author:

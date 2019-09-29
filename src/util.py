@@ -1,4 +1,10 @@
+from __future__ import unicode_literals
 import sys, os
+import youtube_dl
+from youtube_dl.utils import DownloadError
+
+import internal_ydl
+from internal_ydl.utils import DownloadError
 
 ##  Globals
 WINDOW_WIDTH = 500
@@ -70,12 +76,34 @@ def sys_downloads_path( paths ):
         return( home )
 
 
-
 def get_free_space( path ):
+    """Return folder/drive free space (in MiB)."""
+
+    try:
+        mib = 0
+        if sys.platform == "win32" or sys.platform == "win64":
+            freeBytes = ctypes.c_ulonglong(0)
+            ctypes.windll.kernel32.GetDiskFreeSpaceExW( ctypes.c_wchar_p( path),
+                    None, None, ctypes.pointer( freeBytes ))
+            mib = freeBytes.value / 1024.0 / 1024.0
+        else:
+            st = os.statvfs( path )
+            mib = st.f_bavail * st.f_frsize / 1024.0 / 1024.0
+
+        if mib > 1024:
+            return( "%.02lf GiB" % ( mib / 1024.0 ) )
+        else:
+            return( "%d MiB" % mib )
+
+    except ( PermissionError, FileNotFoundError, AttributeError ):
+        return( "UNKNOWN MiB" )
+
+
+def old_get_free_space( path ):
 
     try:
         s = os.statvfs( path )
-    except ( PermissionError, FileNotFoundError ):
+    except ( PermissionError, FileNotFoundError, AttributeError ):
         return( "UNKNOWN" )
 
     suffices = ( 'bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB' )

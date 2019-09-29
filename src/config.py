@@ -1,20 +1,30 @@
 import sys, os
+import configparser
 
 
 def default_opts():
+    """
+    Return a dict filled with default options for the program.
+    """
     opts = {
-            "downloadDir" : os.getenv( "HOME" ),
-            "format" : "22",
-            "duplicates" : False
+            "downloadPath" : os.getenv( "HOME" ),
+            "profile" : "auto",
+            "fallback" : ["auto"],
+            "duplicates" : False,
+            "mode" : "system",
+            "externalPath" : "none",
             }
     
     return( opts )
 
-def config_path():
+def config_data_path():
+    """
+    Returns the full path (str) to the program's configuration data directory.
+    """
     if sys.platform == "win32" or sys.platform == "win64":
-        path = "%s/qytdl" % os.getenv( "APPDATA" )
+        path = "%s/qytdl" % os.environ[ "APPDATA" ]
     else:
-        path = "%s/.config/qytdl" % os.getenv( "HOME" )
+        path = "%s/.config/qytdl" % os.path.expanduser( '~' )
 
     if not os.path.exists( path ):
         try:
@@ -29,42 +39,71 @@ def config_path():
         return( path )
 
 
-def config_file():
+def config_path():
+    """
+    Returns full path (str) to the program's configuration file.
+    """
 
     if sys.platform == "win32" or sys.platform == "win64":
-        cfg = "%s\\config.txt" % config_path()
+        cfg = "%s\\qytdl.cfg" % config_data_path()
     else:
-        cfg = "%s/config.txt" % config_path()
+        cfg = "%s/qytdl.cfg" % config_data_path()
 
     return( cfg )
 
 
-def create_config( path, opts ):
+def write_config( opts ):
+
 
     try:
-        fp = open( path, "w" )
+        cfg = configparser.ConfigParser( allow_no_value = True )
+        cfg.read( config_path() )
+
+        userPath = os.path.expanduser( '~' )
+
 
         ##  Download directory
-        fp.write( "# Path to directory where videos are saved\n" )
-        fp.write( "download_dir=%s\n\n" % opts[ "downloadDir" ] )
+        cfg[ "DEFAULT" ] = {
+                "# Absolute path to directory where downloads are saved" : None,
+                "download_path" : opts.get( "downloadPath", userPath ),
+                "\n# Absolute path to youtube-dl executable, if needed" : None,
+                "external_path" : opts.get( "externalPath", "none" ),
+                "\n# Allow duplicate URLs to be inserted into queue" : None,
+                "allow_duplicates" : opts.get( "allowDuplicates", False ),
+                "\n# Mode used to call youtube-dl (overriden by profiles)" : None,
+                "# system: use libraries called from program (default)" : None,
+                "# internal: use libraries distributed with program" : None,
+                "# external: use external youtube-dl executable" : None,
+                "mode" : opts.get( "mode", "system" )
+                }
 
-        ##  Format code
-        fp.write("# Desired format code " )
-        fp.write( "(use youtube-dl -F $URL to see format codes)\n")
-        fp.write( "# default is 0 (autodetect best)\n" )
-        fp.write( "# 22 = 720p mp4\n" )
-        fp.write( "format=%s\n\n" % opts[ "format" ] )
+        #   Build the fallbacks string
+        fbStr = ""
+        if len( opts[ "fallback" ] ) > 0:
+            if len( opts[ "fallback" ] ) == 1:
+                fbStr = opts[ "fallback" ][0]
+            else:
+                for fb in opts[ "fallback" ][:-1]:
+                    fbStr += ( "%s " % fb )
+                fbStr += opts[ "fallback" ][-1]
+        else:
+            fbStr = "auto"
 
 
-        ##  Duplicates
-        fp.write( "# Allow duplicate URLs in queue (default 0 == no)\n" )
-        dupes = opts[ "duplicates" ]
-        fp.write( "allowDuplicates=%s\n\n" % ( '1' if dupes else '0' ))
+        cfg[ "Profiles" ] = {
+                "# Default profile" : None,
+                "profile" : opts.get( "profile", "auto" ),
+                "\n# Fallback profiles (profile IDs separated by spaces)" : None,
+                "fallback" : fbStr
+                }
 
+        ##  Write it to disk
+        fp = open( config_path(), 'w' )
+        cfg.write( fp )
         fp.close()
 
     except PermissionError:
-        print( "ERROR:  Cannot write to '%s'." % path )
+        print( "ERROR:  Cannot write to '%s'." % config_path() )
         print( "Unable to create settings file, cannot save preferences." )
 
 
@@ -76,55 +115,48 @@ def get_option( line ):
     return( s )
 
 
-def read_options( fp, opts ):
+def read_options( opts ):
 
-    lines = fp.readlines()
-    for line in lines:
-        if line[0] == '#':
-            continue
+    cfg = configparser.ConfigParser( allow_no_value = True )
+    cfg.read( config_path() )
 
-        if "download_dir=" in line:
-            dDir = get_option( line )
-            opts[ "downloadDir" ] = dDir
+    userPath = os.path.expanduser( '~' )
 
-        if "format=" in line:
-            fmt = get_option( line )
-            opts[ "format" ] = fmt
+    ##  Default section
+    section = cfg[ "DEFAULT" ]
+    opts[ "downloadPath" ] = section.get( "download_path", userPath )
+    opts[ "externalPath" ] = section.get( "external_path", "none" )
+    opts[ "duplicates" ] = section.get( "allow_duplicates", False )
+    opts[ "mode" ] = section.get( "mode", "system" )
 
-        if "allowDuplicates=" in line:
-            dupes = False
-            dupeStr = get_option( line )
-            dupeStr = dupeStr.lower()
+    ##  Profiles section
+    section = cfg[ "Profiles" ]
+    opts[ "profile" ] = section.get( "profile", "auto" )
+    opts[ "fallback" ] = []
 
-            if dupeStr == "1" or dupeStr == "yes" or dupeStr == "true":
-                dupes = True
+    fbStr = section.get( "fallback", "auto" )
+    fbStr.replace( ',', '', -1 )
+    for fb in fbStr.split():
+        opts[ "fallback" ].append( fb )
 
-            opts[ "duplicates" ] = dupes
 
 
 def read_config():
 
     opts = default_opts()
-    cfg = config_file()
+
+    if not os.path.exists( config_path() ):
+        write_config( opts )
 
     try:
-        fp = open( cfg, "r" )
-        read_options( fp, opts )
-        fp.close()
+        read_options( opts )
 
     except FileNotFoundError:
-        create_config( cfg, opts )
+        write_config( opts )
 
     except PermissionError:
-        print( "ERROR:  Cannot read from '%s'." % cfg )
+        print( "ERROR:  Cannot read from '%s'." % config_path() )
         print( "Unable to restore settings" )
 
 
     return( opts )
-
-
-
-def write_config( opts ):
-
-    cfg = config_file()
-    create_config( cfg, opts )
