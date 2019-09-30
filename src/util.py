@@ -126,3 +126,28 @@ def old_get_free_space( path ):
         freeSpaceStr = "%d bytes" % freeSpace
 
     return( freeSpaceStr )
+
+
+def generate_dirname( cwd, path ):
+
+    ##  We'll need a mutable string I guess
+    baseDirName = path
+    dirName = baseDirName
+
+    ##  If needed, increment until we get a useful directory name
+    num = 0
+    while os.path.exists( os.path.join( cwd, dirName )):
+        dirName = "%s.%d" % ( baseDirName, num )
+        num += 1
+
+    return( os.path.join( cwd, dirName) )
+
+
+def boolify( B ):
+    b = B.lower()
+    if b == "true" or b == "yes" or b == "1":
+        return( True )
+    elif b == "false" or b == "no" or b == "0":
+        return( False )
+    else:
+        return( B )

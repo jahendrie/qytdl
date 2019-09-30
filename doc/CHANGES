@@ -16,3 +16,5 @@
 
 2019-09-28      0.98    Changed module names to better adhere to Python style,
                         tweaked profile options, changed cfg name and structure
+
+2019-09-30      0.99    Improved playlist support, improved mp3 downloads

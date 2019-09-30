@@ -1,6 +1,17 @@
 import sys, os
 import xml.etree.ElementTree as ET
 
+
+def boolify( B ):
+    b = B.lower()
+    if b == "true" or b == "yes" or b == "1":
+        return( True )
+    elif b == "false" or b == "no" or b == "0":
+        return( False )
+    else:
+        return( B )
+
+
 class Profile():
     def __init__( self, pro = None ):
 
@@ -14,6 +25,7 @@ class Profile():
         self.example = False
         self.comment = None
         self.postprocessors = None
+        self.writeThumbnail = False
 
         if pro != None:
             self.parse( pro )
@@ -49,42 +61,56 @@ class Profile():
         audioFormat = pro.find( "audio_format" )
         mergeOutputFormat = pro.find( "merge_output_format" )
 
-        self.videoFormat = None
+        #self.videoFormat = pro.find(
         if videoFormat != None:
             self.videoFormat = videoFormat.text
 
-        self.audioFormat = None
+        #self.audioFormat = None
         if audioFormat != None:
             self.audioFormat = audioFormat.text
 
-        self.mergeOutputFormat = None
+        #self.mergeOutputFormat = None
         if mergeOutputFormat != None:
             self.mergeOutputFormat = mergeOutputFormat.text
 
+
+        ##  See if we're explicitly writing the thumbnail
+        writeThumbnail = pro.find( "write_thumbnail" )
+        if writeThumbnail != None:
+            self.writeThumbnail = boolify( writeThumbnail.text )
+
         ##  Post-processors, used for some formats
-        ppText = pro.find( "postprocessors" )
-        if ppText != None:
-            self.postprocessors = self.parse_post_processors( ppText )
-        else:
-            self.postprocessors = None
+        postProcessors = pro.find( "postprocessors" )
+        if postProcessors != None:
+            self.postprocessors = self.parse_post_processors( postProcessors )
 
-    def parse_post_processors( self, ppText ):
-        d = {}
-        for pp in ppText.text.split():
-            keyVal = pp.replace( ',', '', -1 )
-            keyValParts = keyVal.partition( ':' )
-            if keyVal != None and keyVal != '' and keyVal != '\n':
-                d[ keyValParts[0] ] = keyValParts[2]
 
-        return( d )
+    def parse_post_processors( self, postProcessors ):
+        ppList = []
+        for pp in postProcessors.iter( "pp" ):
+            d = {}
+            for pt in pp.text.split():
+                keyVal = pt.replace( ',', '', -1 )
+                keyValParts = keyVal.partition( ':' )
+                if keyVal != None and keyVal != '' and keyVal != '\n':
+                    d[ keyValParts[0] ] = boolify( keyValParts[2] )
+
+                ppList.append( d )
+
+        return( ppList if len( ppList ) > 0 else None )
+
 
     def write_post_processors( self, fp ):
 
         if self.postprocessors != None:
             fp.write( "\t\t<postprocessors>\n" )
 
-            for key in self.postprocessors:
-                fp.write( "\t\t\t%s:%s,\n" % ( key, self.postprocessors[key]))
+            for pp in self.postprocessors:
+                fp.write( "\t\t\t<pp>\n" )
+                for key in pp:
+                    fp.write( "\t\t\t\t%s:%s,\n" % (key,self.postprocessors[key]))
+
+                fp.write( "\t\t\t</pp>\n" )
 
             fp.write( "\t\t</postprocessors>\n" )
 
@@ -131,6 +157,9 @@ class Profile():
         if self.mergeOutputFormat != None:
             fp.write( "\t\t<merge_output_format>%s</merge_output_format>\n" %
                     self.mergeOutputFormat )
+
+        if self.writeThumbnail != None and self.writeThumbnail == True:
+            fp.write( "\t\t<write_thumbnail>true</write_thumbnail>\n" )
 
         ##  Handle the pp
         self.write_post_processors( fp )
@@ -243,11 +272,17 @@ def default_profiles():
     pro.name = "MP3 192kbps"
     pro.videoFormat = None
     pro.audioFormat = "bestaudio/best"
-    pro.postprocessors = {
-            "key" : "FFmpegExtractAudio",
-            "preferredcodec" : "mp3",
-            "preferredquality" : "192",
-            }
+    pro.writeThumbnail = True
+    pro.postprocessors = [
+            {
+                "key" : "FFmpegExtractAudio",
+                "preferredcodec" : "mp3",
+                "preferredquality" : "192",
+            },
+            { "key" : "FFmpegMetadata", },
+            { "key" : "EmbedThumbnail", },
+        ]
+
     profiles.append( pro )
 
     return( profiles, examples )

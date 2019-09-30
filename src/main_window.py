@@ -104,7 +104,18 @@ class MainWindow( QMainWindow ):
         self.dupeAction = QAction( "Allow duplicates", self )
         self.dupeAction.setStatusTip( "Allow duplicate URLs in queue" )
         self.dupeAction.setCheckable( True )
+        if self.opts[ "duplicates" ] == "true":
+            self.dupeAction.setChecked( True )
         self.dupeAction.triggered.connect( self.check_dupe_box )
+
+        ##  New folder for playlists
+        self.playlistFolderAction = QAction( "New folder for playlists", self )
+        self.playlistFolderAction.setStatusTip(
+                "Create a new folder for every playlist downloaded" )
+        self.playlistFolderAction.setCheckable( True )
+        if self.opts[ "playlistFolder" ] == "true":
+            self.playlistFolderAction.setChecked( True )
+        self.playlistFolderAction.triggered.connect( self.check_playlist_dir_box )
 
 
         ##  About action
@@ -131,6 +142,7 @@ class MainWindow( QMainWindow ):
         editMenu.addAction( pasteAction )
         editMenu.addAction( setDestAction )
         editMenu.addAction( self.dupeAction )
+        editMenu.addAction( self.playlistFolderAction )
 
         helpMenu = menuBar.addMenu( "&Help" )
         helpMenu.addAction( aboutAction )
@@ -185,7 +197,10 @@ class MainWindow( QMainWindow ):
     def write_config( self ):
 
         self.opts[ "downloadPath" ] = self.mainWidget.destEdit.text()
-        self.opts[ "duplicates" ] = self.dupeAction.isChecked()
+        self.opts[ "duplicates" ] = str( self.dupeAction.isChecked() ).lower()
+
+        boolStr = str( self.playlistFolderAction.isChecked() ).lower()
+        self.opts[ "playlistFolder" ] = boolStr
 
         write_config( self.opts )
 
@@ -197,7 +212,12 @@ class MainWindow( QMainWindow ):
 
 
     def check_dupe_box( self ):
-        self.opts[ "duplicates" ] = self.dupeAction.isChecked()
+        self.opts[ "duplicates" ] = str( self.dupeAction.isChecked() ).lower()
+        self.save_settings()
+
+    def check_playlist_dir_box( self ):
+        boolStr = str( self.playlistFolderAction.isChecked() ).lower()
+        self.opts[ "playlistFolder" ] = boolStr
         self.save_settings()
 
 
@@ -205,7 +225,7 @@ class MainWindow( QMainWindow ):
         aboutStr = """
         qYoutube-DL is a basic PyQt5 frontend to Youtube-DL.
 
-        Version:    0.98
+        Version:    0.99
         License:    GPLv3 - https://www.gnu.org/licenses/gpl-3.0.txt
         Author:     James Hendrie - hendrie.james@gmail.com
         Git:        https://github.com/jahendrie/qytdl

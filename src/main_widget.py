@@ -226,7 +226,7 @@ class MainWidget( QWidget ):
 
     def add_url_to_list( self, url ):
 
-        if self.parent.opts[ "duplicates" ] == True:
+        if self.parent.opts[ "duplicates" ] == "true":
             self.listWidget.addItem( url )
 
         else:
@@ -257,13 +257,16 @@ class MainWidget( QWidget ):
         #if d[ "status" ] == "finished":
         #    print( "yay done" )
 
-        if d[ "status" ] == "downloading":
-            x = d[ "downloaded_bytes" ]
-            y = d[ "total_bytes" ]
+        try:
+            if d[ "status" ] == "downloading":
+                x = d[ "downloaded_bytes" ]
+                y = d[ "total_bytes" ]
 
-            #val = 100 * ((y/x) * ( totalUrls/(currentUrl+1)))
-            val = 100.0 * ( x / y )
-            self.currentProgressBar.setValue( val )
+                #val = 100 * ((y/x) * ( totalUrls/(currentUrl+1)))
+                val = 100.0 * ( x / y )
+                self.currentProgressBar.setValue( val )
+        except KeyError:
+            self.currentProgressBar.setValue( 100 )
 
 
     def ydl_opts( self, profile ):
@@ -290,7 +293,14 @@ class MainWidget( QWidget ):
             ydl_opts[ "merge_output_format" ] = profile.mergeOutputFormat
 
         if profile.postprocessors != None:
-            ydl_opts[ "postprocessors" ] = [ profile.postprocessors ]
+            ydl_opts[ "postprocessors" ] =  profile.postprocessors
+
+            #for pp in profile.postprocessors:
+            #    if "EmbedThumbnail" in pp.values():
+            #        ydl_opts[ "writethumbnail" ] = True
+
+        if profile.writeThumbnail != None and profile.writeThumbnail == True:
+            ydl_opts[ "writethumbnail" ] = True
 
         return( ydl_opts )
 
@@ -386,6 +396,54 @@ class MainWidget( QWidget ):
         return False
 
 
+    def process_playlist( self, info, opts, url ):
+
+        ###  Title of the playlist
+        title = info[ "title" ]
+
+        ##  If they want a new directory for the playlist, make it and move in
+        currentDirectory = os.path.abspath( '.' )
+        if opts[ "playlistFolder" ] == "true":
+            dirName = generate_dirname( currentDirectory, title )
+            os.mkdir( dirName )
+            os.chdir( os.path.join( currentDirectory, dirName ))
+
+        ##  Get the entries
+        if "entries" in info:
+            vids = list( info[ "entries" ] )
+        else:
+            vids = [ info ]
+
+        ##  Number of videos
+        numVids = len( vids )
+
+        ##  Set 'current' maximum to whatever that number is
+        self.currentProgressBar.setMaximum( numVids )
+
+        ##  Start 'er up
+        status = self.parent.statusBar()
+        currentVid = 0
+        for vid in vids:
+            status.showMessage(
+                    "Downloading playlist entry %d/%d, please wait..." %
+                    ( currentVid+1, numVids ))
+            self.currentProgressBar.setValue( currentVid )
+            currentVid += 1
+
+            #profile = self.parent.profiles[ opts[ "profile" ] ]
+            if not self.download_video( opts, vid[ "url" ] ):
+                print( "WARNING:  Unable to download URL '%s'" % vid[ "url" ] )
+                continue
+
+
+        ##  Reset the maximum for current bar
+        self.currentProgressBar.setMaximum( 100 )
+
+        ##  Change back out of the playlist directory
+        os.chdir( currentDirectory )
+
+
+
     def start_download( self ):
 
         ##  Don't do anything if there ain't stuff in the list
@@ -429,12 +487,35 @@ class MainWidget( QWidget ):
             ##  Change the cursor
             QApplication.setOverrideCursor( Qt.WaitCursor )
 
+            ##  Just grab this here for convenience's sake
+            ydl = youtube_dl.YoutubeDL( { "quiet" : True } )
             for url in urls:
-                self.currentProgressBar.setValue( 0 )
+
+                ##  Current URL stuff
+                #currentUrl += 1
+                self.totalProgressBar.setValue( currentUrl )
 
                 status.showMessage(
                         "Downloading %d/%d, please wait..." %
-                        ( currentUrl + 1, totalUrls ))
+                        ( currentUrl+1, totalUrls ))
+
+                ##  First off, see if it's a playlist
+                info = ydl.extract_info( url, process = False )
+                if info[ "extractor" ] == "youtube:playlist":
+
+
+                    ##  Work the playlist, baby
+                    self.process_playlist( info, opts, url )
+
+                    ##  Update the free label thingy
+                    self.update_free_label()
+
+                    ##  Go back to top of loop
+                    currentUrl += 1
+                    continue
+
+                ##  Reset the 'current' progress bar
+                self.currentProgressBar.setValue( 0 )
 
                 #profile = self.parent.profiles[ opts[ "profile" ] ]
                 if not self.download_video( opts, url ):

@@ -10,9 +10,10 @@ def default_opts():
             "downloadPath" : os.getenv( "HOME" ),
             "profile" : "auto",
             "fallback" : ["auto"],
-            "duplicates" : False,
+            "duplicates" : "false",
             "mode" : "system",
             "externalPath" : "none",
+            "playlistFolder" : "true",
             }
     
     return( opts )
@@ -68,8 +69,10 @@ def write_config( opts ):
                 "download_path" : opts.get( "downloadPath", userPath ),
                 "\n# Absolute path to youtube-dl executable, if needed" : None,
                 "external_path" : opts.get( "externalPath", "none" ),
-                "\n# Allow duplicate URLs to be inserted into queue" : None,
-                "allow_duplicates" : opts.get( "allowDuplicates", False ),
+                "\n# Allow duplicate URLs into queue (true/false)" : None,
+                "allow_duplicates" : opts.get( "duplicates", "false" ),
+                "\n# Each playlist gets its own subdirectory (true/false)" : None,
+                "playlist_folder" : opts.get( "playlistFolder", "true" ),
                 "\n# Mode used to call youtube-dl (overriden by profiles)" : None,
                 "# system: use libraries called from program (default)" : None,
                 "# internal: use libraries distributed with program" : None,
@@ -126,7 +129,8 @@ def read_options( opts ):
     section = cfg[ "DEFAULT" ]
     opts[ "downloadPath" ] = section.get( "download_path", userPath )
     opts[ "externalPath" ] = section.get( "external_path", "none" )
-    opts[ "duplicates" ] = section.get( "allow_duplicates", False )
+    opts[ "duplicates" ] = section.get( "allow_duplicates", "false" )
+    opts[ "playlistFolder" ] = section.get( "playlist_folder", "true" )
     opts[ "mode" ] = section.get( "mode", "system" )
 
     ##  Profiles section
