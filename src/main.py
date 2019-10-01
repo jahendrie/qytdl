@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #===============================================================================
-#   qytdl   |   version 0.99    |   GPL v3      |   2019-09-28
+#   qytdl   |   version 1.0     |   GPL v3      |   2019-10-01
 #   James Hendrie               |   hendrie.james@gmail.com
 #
 #   PyQt5 front-end to Youtube-DL.
@@ -33,7 +33,7 @@ from icons import Icons
 
 
 def print_version():
-    print( "qytdl, version 0.99" )
+    print( "qytdl, version 1.0" )
     print( "James Hendrie <hendrie.james@gmail.com>" )
 
 def print_usage():
@@ -98,7 +98,8 @@ def main():
 
     app = QApplication( sys.argv )
 
-    app.setWindowIcon( Icons().get_icon( "application-icon", True ))
+    sysInstall = ( os.path.expanduser( '~' ) in sys.argv[0] )
+    app.setWindowIcon( Icons().get_icon( "application-icon", sysInstall ))
 
     win = MainWindow()
 

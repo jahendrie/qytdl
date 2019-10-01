@@ -27,7 +27,6 @@ class MainWindow( QMainWindow ):
     def init_UI( self ):
         self.profiles = read_profiles()
         self.mainWidget = MainWidget( self )
-        #self.mainWidget.init_profile_box()
 
         self.statusBar()
         self.build_menu_bar()
@@ -51,50 +50,55 @@ class MainWindow( QMainWindow ):
 
         get_icon = Icons().get_icon
 
+        ##  Is this a system install?
+        sysInstall = ( os.path.expanduser( '~' ) in sys.argv[0] )
+
         ########  Actions
 
         ##  Save
-        saveAction = QAction( QIcon( get_icon( "document-save" )),
+        saveAction = QAction( QIcon( get_icon( "document-save", sysInstall )),
                 "&Save Settings",self)
         saveAction.setShortcut( "Ctrl+S" )
         saveAction.setStatusTip( "Save current settings" )
         saveAction.triggered.connect( self.save_settings )
 
         ##  Import playlist
-        importAction = QAction( QIcon( get_icon( "document-open")),
+        importAction = QAction( QIcon( get_icon( "document-open", sysInstall )),
                 "&Import URLs", self )
         importAction.setShortcut( "Ctrl+I" )
         importAction.setStatusTip( "Import a saved list of URLs" )
         importAction.triggered.connect( self.import_urls )
 
         ##  Export playlist
-        exportAction = QAction( QIcon( get_icon( "document-save")),
+        exportAction = QAction( QIcon( get_icon( "document-save", sysInstall )),
                 "&Export URLs", self )
         exportAction.setShortcut( "Ctrl+E" )
         exportAction.setStatusTip( "Export URLs to a text file" )
         exportAction.triggered.connect( self.export_urls )
 
         ##  Exit
-        exitAction = QAction( QIcon( get_icon( "application-exit")),
+        exitAction = QAction( QIcon( get_icon( "application-exit", sysInstall)),
                 "&Exit", self )
         exitAction.setShortcut( "Ctrl+Q" )
         exitAction.setStatusTip( "Exit the application" )
         exitAction.triggered.connect( qApp.quit )
 
         ##  Go
-        goAction = QAction( QIcon( get_icon( "go-next")), "Download URLs", self)
+        goAction = QAction( QIcon( get_icon( "go-next", sysInstall )),
+                "Download URLs", self)
         goAction.setShortcut( "Return" )
         goAction.setStatusTip( "Download current URL list" )
         goAction.triggered.connect( self.mainWidget.start_download )
 
         ##  Paste
-        pasteAction = QAction( QIcon( get_icon( "edit-paste")), "&Paste", self)
+        pasteAction = QAction( QIcon( get_icon( "edit-paste", sysInstall )),
+                "&Paste", self)
         pasteAction.setShortcut( "Ctrl+V" )
         pasteAction.setStatusTip( "Add URL from clipboard" )
         pasteAction.triggered.connect( self.mainWidget.quick_add_item )
 
         ##  Set destination
-        setDestAction = QAction( QIcon( get_icon( "folder-open")),
+        setDestAction = QAction( QIcon( get_icon( "folder-open", sysInstall )),
                 "Set &Download directory", self )
         setDestAction.setShortcut( "Ctrl+D" )
         setDestAction.setStatusTip( "Choose your download directory" )
@@ -119,7 +123,8 @@ class MainWindow( QMainWindow ):
 
 
         ##  About action
-        aboutAction = QAction( QIcon( get_icon( "help-about" )), "&About", self)
+        aboutAction = QAction( QIcon( get_icon( "help-about", sysInstall )),
+                "&About", self)
         aboutAction.setStatusTip( "Information about the program" )
         aboutAction.triggered.connect( self.about )
 
@@ -225,7 +230,7 @@ class MainWindow( QMainWindow ):
         aboutStr = """
         qYoutube-DL is a basic PyQt5 frontend to Youtube-DL.
 
-        Version:    0.99
+        Version:    1.0
         License:    GPLv3 - https://www.gnu.org/licenses/gpl-3.0.txt
         Author:     James Hendrie - hendrie.james@gmail.com
         Git:        https://github.com/jahendrie/qytdl

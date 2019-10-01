@@ -4,6 +4,7 @@ way of fetching the appropriate icons for a given action.  It first attempts
 the built-in system defaults; if those are not found, fallbacks are provided.
 """
 
+import os
 from PyQt5.QtGui import QIcon
 
 from util import icon_path, system_install_path
@@ -22,65 +23,14 @@ class Icons():
         """
 
         if systemInstall:
-            path = "%s/data/icons/%s.png" % ( system_install_path(), iconString)
-            return( path )
+            path = os.path.join( system_install_path(), "icons" )
+        else:
+            path = icon_path()
 
-        if iconString == "list-add":
-            return( icon_path( "add.png" ) )
+        iSVG = os.path.join( path, "svg/" ) + iconString + ".svg"
+        iPNG = os.path.join( path, "png/" ) + iconString + ".png"
 
-        elif iconString == "application-exit":
-            return( icon_path( "exit.png" ) )
-
-        elif iconString == "help-about":
-            return( icon_path( "help.png" ) )
-
-        elif iconString == "help-faq":
-            return( icon_path( "helphint.png" ))
-
-        elif iconString == "document-new":
-            return( icon_path( "new.png" ) )
-
-        elif iconString == "document-open":
-            return( icon_path( "open.png" ) )
-
-        elif iconString == "list-remove":
-            return( icon_path( "remove.png" ) )
-
-        elif iconString == "document-save-as":
-            return( icon_path( "saveas.png" ) )
-
-        elif iconString == "document-save":
-            return( icon_path( "save.png" ) )
-
-        elif iconString == "cTop" or iconString == "connected-top":
-            return( icon_path( "connected-top.png" ))
-
-        elif iconString == "cMiddle" or iconString == "connected-middle":
-            return( icon_path( "connected-middle.png" ))
-
-        elif iconString == "cBottom" or iconString == "connected-bottom":
-            return( icon_path( "connected-bottom.png" ))
-
-        elif iconString == "checkbox":
-            return( icon_path( "checkbox.png" ))
-
-        elif iconString == "help-contents":
-            return( icon_path( "help-contents.png" ))
-
-        elif iconString == "application-icon":
-            return( icon_path( "application-icon.png" ))
-
-        elif iconString == "go-next":
-            return( icon_path( "go-next.png" ))
-
-        elif iconString == "edit-paste":
-            return( icon_path( "edit-paste.png" ))
-
-        elif iconString == "folder-open":
-            return( icon_path( "folder-open.png" ))
-
-        elif iconString == "TEST":
-            return( icon_path( "TEST.png" ) )
+        return( iSVG if os.path.exists( iSVG ) else iPNG )
 
     
 
