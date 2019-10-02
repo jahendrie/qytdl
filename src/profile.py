@@ -108,7 +108,7 @@ class Profile():
             for pp in self.postprocessors:
                 fp.write( "\t\t\t<pp>\n" )
                 for key in pp:
-                    fp.write( "\t\t\t\t%s:%s,\n" % (key,self.postprocessors[key]))
+                    fp.write( "\t\t\t\t%s:%s,\n" % (key, self.pp[ key ]))
 
                 fp.write( "\t\t\t</pp>\n" )
 

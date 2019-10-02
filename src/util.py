@@ -6,6 +6,9 @@ from youtube_dl.utils import DownloadError
 import internal_ydl
 from internal_ydl.utils import DownloadError
 
+if sys.platform == "win32" or sys.platform == "win64":
+    import ctypes
+
 ##  Globals
 WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 800

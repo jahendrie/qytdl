@@ -230,7 +230,7 @@ class MainWindow( QMainWindow ):
         aboutStr = """
         qYoutube-DL is a basic PyQt5 frontend to Youtube-DL.
 
-        Version:    1.0
+        Version:    1.02
         License:    GPLv3 - https://www.gnu.org/licenses/gpl-3.0.txt
         Author:     James Hendrie - hendrie.james@gmail.com
         Git:        https://github.com/jahendrie/qytdl

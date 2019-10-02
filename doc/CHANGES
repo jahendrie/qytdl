@@ -22,3 +22,5 @@
 2019-10-01      1.0     Improved the icons class a little bit
 
 2019-10-02      1.01    Fixed a bug with the .desktop file
+
+2019-10-02      1.02    Fixed a bug with writing profiles.  Oops.

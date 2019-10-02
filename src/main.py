@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #===============================================================================
-#   qytdl   |   version 1.0     |   GPL v3      |   2019-10-01
+#   qytdl   |   version 1.02    |   GPL v3      |   2019-10-02
 #   James Hendrie               |   hendrie.james@gmail.com
 #
 #   PyQt5 front-end to Youtube-DL.
@@ -33,7 +33,7 @@ from icons import Icons
 
 
 def print_version():
-    print( "qytdl, version 1.0" )
+    print( "qytdl, version 1.02" )
     print( "James Hendrie <hendrie.james@gmail.com>" )
 
 def print_usage():
