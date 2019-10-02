@@ -20,3 +20,5 @@
 2019-09-30      0.99    Improved playlist support, improved mp3 downloads
 
 2019-10-01      1.0     Improved the icons class a little bit
+
+2019-10-02      1.01    Fixed a bug with the .desktop file
