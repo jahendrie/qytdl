@@ -24,3 +24,5 @@
 2019-10-02      1.01    Fixed a bug with the .desktop file
 
 2019-10-02      1.02    Fixed a bug with writing profiles.  Oops.
+
+2020-04-15      1.1     Fixed another (default) profile writing bug.

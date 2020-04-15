@@ -307,11 +307,14 @@ class MainWidget( QWidget ):
 
     def standard_download( self, opts, profile, url ):
 
-        ##  Determine which module we're using
-        if profile.mode == "internal":
-            ydl_module = internal_ydl
-        else:
-            ydl_module = youtube_dl
+        ####    RE-ENABLE if you want to let it use internal YDL
+        ###  Determine which module we're using
+        #if profile.mode == "internal":
+        #    ydl_module = internal_ydl
+        #else:
+        #    ydl_module = youtube_dl
+
+        ydl_module = youtube_dl
 
 
         ydl_opts = self.ydl_opts( profile )

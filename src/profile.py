@@ -108,7 +108,7 @@ class Profile():
             for pp in self.postprocessors:
                 fp.write( "\t\t\t<pp>\n" )
                 for key in pp:
-                    fp.write( "\t\t\t\t%s:%s,\n" % (key, self.pp[ key ]))
+                    fp.write( "\t\t\t\t%s:%s,\n" % (key, pp[ key ]))
 
                 fp.write( "\t\t\t</pp>\n" )
 
@@ -352,6 +352,7 @@ def read_profiles():
     except FileNotFoundError:
         defaults, examples = default_profiles()
         create_profiles( profilePath, defaults, examples )
+        profiles = read_profiles()
 
     except PermissionError:
         print( "ERROR:  Cannot read from '%s'." % profilePath )

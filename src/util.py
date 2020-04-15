@@ -3,8 +3,9 @@ import sys, os
 import youtube_dl
 from youtube_dl.utils import DownloadError
 
-import internal_ydl
-from internal_ydl.utils import DownloadError
+####    RE-ENABLE if you want to enable possible internal YDL
+#import internal_ydl
+#from internal_ydl.utils import DownloadError
 
 if sys.platform == "win32" or sys.platform == "win64":
     import ctypes
@@ -14,6 +15,8 @@ WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 800
 
 
+def qytdl_version():
+    return( "1.1" )
 
 def system_install_path():
     return( "/usr/share/qytdl" )
