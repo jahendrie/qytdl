@@ -14,6 +14,7 @@ def default_opts():
             "mode" : "system",
             "externalPath" : "none",
             "playlistFolder" : "true",
+            "theme" : "default",
             }
     
     return( opts )
@@ -45,12 +46,7 @@ def config_path():
     Returns full path (str) to the program's configuration file.
     """
 
-    if sys.platform == "win32" or sys.platform == "win64":
-        cfg = "%s\\qytdl.cfg" % config_data_path()
-    else:
-        cfg = "%s/qytdl.cfg" % config_data_path()
-
-    return( cfg )
+    return( os.path.join( config_data_path(), "qytdl.cfg" ))
 
 
 def write_config( opts ):
@@ -100,6 +96,12 @@ def write_config( opts ):
                 "fallback" : fbStr
                 }
 
+        cfg[ "Theme" ] = {
+                "# Color theme to use (KDE breeze themes)" : None,
+                "# Current options are 'dark', 'light' and 'default'" : None,
+                "theme" : opts.get( "theme", "default")
+                }
+
         ##  Write it to disk
         fp = open( config_path(), 'w' )
         cfg.write( fp )
@@ -138,10 +140,15 @@ def read_options( opts ):
     opts[ "profile" ] = section.get( "profile", "auto" )
     opts[ "fallback" ] = []
 
+
     fbStr = section.get( "fallback", "auto" )
     fbStr.replace( ',', '', -1 )
     for fb in fbStr.split():
         opts[ "fallback" ].append( fb )
+
+    ##  Theme
+    section = cfg[ "Theme" ]
+    opts[ "theme" ] = section.get( "theme", "default" )
 
 
 

@@ -6,6 +6,8 @@ from PyQt5.Qt import QAction
 from main_widget import MainWidget
 #from aboutWidget import AboutWidget
 
+import breeze_resources
+
 from util import *
 from icons import Icons
 from config import *
@@ -21,10 +23,31 @@ class MainWindow( QMainWindow ):
     def __init__( self ):
         super().__init__()
 
+        self.icon_paths()
+
         self.init_UI()
 
 
+    def icon_paths( self ):
+
+        self.defaultIconTheme = QIcon.themeName()
+        
+        iconPaths = QIcon.themeSearchPaths()
+        iconPaths.append( icon_path() )
+
+        QIcon.setThemeSearchPaths( iconPaths )
+
+        QIcon.setFallbackSearchPaths( [ icon_path( "default" ) ] )
+        QIcon.setFallbackThemeName( "default" )
+
+        #QIcon.setThemeName( "default" )
+
+
     def init_UI( self ):
+
+        ##  Set the theme
+        self.set_stylesheet( self.opts[ "theme" ] )
+
         self.profiles = read_profiles()
         self.mainWidget = MainWidget( self )
 
@@ -56,49 +79,49 @@ class MainWindow( QMainWindow ):
         ########  Actions
 
         ##  Save
-        saveAction = QAction( QIcon( get_icon( "document-save", sysInstall )),
+        saveAction = QAction( QIcon( get_icon( "document-save-symbolic", sysInstall )),
                 "&Save Settings",self)
         saveAction.setShortcut( "Ctrl+S" )
         saveAction.setStatusTip( "Save current settings" )
         saveAction.triggered.connect( self.save_settings )
 
         ##  Import playlist
-        importAction = QAction( QIcon( get_icon( "document-open", sysInstall )),
+        importAction = QAction( QIcon( get_icon( "document-open-symbolic", sysInstall )),
                 "&Import URLs", self )
         importAction.setShortcut( "Ctrl+I" )
         importAction.setStatusTip( "Import a saved list of URLs" )
         importAction.triggered.connect( self.import_urls )
 
         ##  Export playlist
-        exportAction = QAction( QIcon( get_icon( "document-save", sysInstall )),
+        exportAction = QAction( QIcon( get_icon( "document-save-symbolic", sysInstall )),
                 "&Export URLs", self )
         exportAction.setShortcut( "Ctrl+E" )
         exportAction.setStatusTip( "Export URLs to a text file" )
         exportAction.triggered.connect( self.export_urls )
 
         ##  Exit
-        exitAction = QAction( QIcon( get_icon( "application-exit", sysInstall)),
+        exitAction = QAction( QIcon( get_icon( "application-exit-symbolic", sysInstall)),
                 "&Exit", self )
         exitAction.setShortcut( "Ctrl+Q" )
         exitAction.setStatusTip( "Exit the application" )
         exitAction.triggered.connect( qApp.quit )
 
         ##  Go
-        goAction = QAction( QIcon( get_icon( "go-next", sysInstall )),
+        goAction = QAction( QIcon( get_icon( "go-next-symbolic", sysInstall )),
                 "Download URLs", self)
         goAction.setShortcut( "Return" )
         goAction.setStatusTip( "Download current URL list" )
         goAction.triggered.connect( self.mainWidget.start_download )
 
         ##  Paste
-        pasteAction = QAction( QIcon( get_icon( "edit-paste", sysInstall )),
+        pasteAction = QAction( QIcon( get_icon( "edit-paste-symbolic", sysInstall )),
                 "&Paste", self)
         pasteAction.setShortcut( "Ctrl+V" )
         pasteAction.setStatusTip( "Add URL from clipboard" )
         pasteAction.triggered.connect( self.mainWidget.quick_add_item )
 
         ##  Set destination
-        setDestAction = QAction( QIcon( get_icon( "folder-open", sysInstall )),
+        setDestAction = QAction( QIcon( get_icon( "document-open-symbolic", sysInstall )),
                 "Set &Download directory", self )
         setDestAction.setShortcut( "Ctrl+D" )
         setDestAction.setStatusTip( "Choose your download directory" )
@@ -123,10 +146,27 @@ class MainWindow( QMainWindow ):
 
 
         ##  About action
-        aboutAction = QAction( QIcon( get_icon( "help-about", sysInstall )),
+        aboutAction = QAction( QIcon( get_icon( "help-about-symbolic", sysInstall )),
                 "&About", self)
         aboutAction.setStatusTip( "Information about the program" )
         aboutAction.triggered.connect( self.about )
+
+        ##  ======  Theme actions
+        ##  System default theme
+        defaultThemeAction = QAction( "Default", self )
+        defaultThemeAction.setStatusTip( "Set theme to system default" )
+        defaultThemeAction.triggered.connect( self.toggle_theme_default )
+
+        ##  Light theme
+        lightThemeAction = QAction( "Light theme", self )
+        lightThemeAction.setStatusTip( "Use a light theme" )
+        lightThemeAction.triggered.connect( self.toggle_theme_light )
+
+        ##  Dark theme
+        darkThemeAction = QAction( "Dark theme", self )
+        darkThemeAction.setStatusTip( "Use a dark theme" )
+        darkThemeAction.triggered.connect( self.toggle_theme_dark )
+
 
 
         ##  Create the menubar
@@ -143,12 +183,25 @@ class MainWindow( QMainWindow ):
         fileMenu.addSeparator()
         fileMenu.addAction( exitAction )
 
+        ##  Edit Menu
         editMenu = menuBar.addMenu( "&Edit" )
         editMenu.addAction( pasteAction )
-        editMenu.addAction( setDestAction )
-        editMenu.addAction( self.dupeAction )
-        editMenu.addAction( self.playlistFolderAction )
 
+        ##  Settins Menu
+        settingsMenu = menuBar.addMenu( "&Settings" )
+        themesMenu = settingsMenu.addMenu( "Theme" )
+        settingsMenu.addSeparator()
+        settingsMenu.addAction( setDestAction )
+        settingsMenu.addSeparator()
+        settingsMenu.addAction( self.dupeAction )
+        settingsMenu.addAction( self.playlistFolderAction )
+
+        ##  Themes submenu
+        themesMenu.addAction( defaultThemeAction )
+        themesMenu.addAction( lightThemeAction )
+        themesMenu.addAction( darkThemeAction )
+
+        ##  Help menu
         helpMenu = menuBar.addMenu( "&Help" )
         helpMenu.addAction( aboutAction )
 
@@ -236,3 +289,32 @@ class MainWindow( QMainWindow ):
         Git:        https://github.com/jahendrie/qytdl
         """ % qytdl_version()
         msg = QMessageBox.about( self, "About qYoutube-DL", aboutStr )
+
+
+
+    def toggle_theme_default( self ):
+        self.set_stylesheet()
+        self.opts[ "theme" ] = "default"
+        self.write_config()
+
+    def toggle_theme_light( self ):
+        self.set_stylesheet( "light" )
+        self.opts[ "theme" ] = "light"
+        self.write_config()
+
+    def toggle_theme_dark( self ):
+        self.set_stylesheet( "dark" )
+        self.opts[ "theme" ] = "dark"
+        self.write_config()
+
+    def set_stylesheet( self, ssStr="" ):
+        if ssStr == "dark" or ssStr == "light":
+            ssFile = open( stylesheets_path( "%s.qss" % ssStr ), "r" )
+            self.setStyleSheet( ssFile.read() )
+            ssFile.close()
+            QIcon.setThemeName( ssStr )
+
+        else:
+            self.setStyleSheet( "" )
+            QIcon.setThemeName( self.defaultIconTheme )
+

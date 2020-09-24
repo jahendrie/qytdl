@@ -27,8 +27,10 @@ class Icons():
         else:
             path = icon_path()
 
-        iSVG = os.path.join( path, "svg/" ) + iconString + ".svg"
-        iPNG = os.path.join( path, "png/" ) + iconString + ".png"
+        fbPath = os.path.join( path, "fallback" )
+
+        iSVG = os.path.join( fbPath, "svg/" ) + iconString + ".svg"
+        iPNG = os.path.join( fbPath, "png/" ) + iconString + ".png"
 
         return( iSVG if os.path.exists( iSVG ) else iPNG )
 
@@ -43,7 +45,8 @@ class Icons():
         """
 
         ##  The icon
-        fbIcon = QIcon( self.fallback_path( iconString, systemInstall ))
+        iString = iconString.replace( "-symbloic", '', -1 )
+        fbIcon = QIcon( self.fallback_path( iString, systemInstall ))
 
         return( fbIcon )
 

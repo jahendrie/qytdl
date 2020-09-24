@@ -17,8 +17,6 @@ LICENSEPATH=$(PREFIX)/share/licenses/qytdl
 
 install:
 	find . -type f -exec install -Dm 755 "{}" "$(INSTALL_PATH)/{}" \;
-	install $(ICONS)/png/*.png -D -t $(INSTALL_PATH)/data/icons/png/
-	install $(ICONS)/svg/*.svg -D -t $(INSTALL_PATH)/data/icons/svg/
 	install $(DESKTOP_FILE) -D $(DESKTOP_PATH)/$(DESKTOP_FILE)
 	install README -D $(DOCPATH)/README
 	install $(DOC)/CHANGES -D $(DOCPATH)/CHANGES

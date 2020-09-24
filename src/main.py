@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 #===============================================================================
-#   qytdl   |   version 1.1     |   GPL v3      |   2020-04-15
+#   qytdl   |   version 1.2     |   GPL v3      |   2020-09-23
 #   James Hendrie               |   hendrie.james@gmail.com
 #
 #   PyQt5 front-end to Youtube-DL.
 #
 #   ---------------------------------------------------------------------------
 #
-#    Copyright (C) 2017-2019 James Hendrie
+#    Copyright (C) 2017-2020 James Hendrie
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -102,6 +102,7 @@ def main():
 
     sysInstall = ( os.path.expanduser( '~' ) in sys.argv[0] )
     app.setWindowIcon( Icons().get_icon( "application-icon", sysInstall ))
+
 
     win = MainWindow()
 

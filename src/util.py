@@ -16,7 +16,7 @@ WINDOW_HEIGHT = 800
 
 
 def qytdl_version():
-    return( "1.1" )
+    return( "1.2" )
 
 def system_install_path():
     return( "/usr/share/qytdl" )
@@ -37,27 +37,36 @@ def get_data_dir():
     return( dataDir )
 
 
+
 def icon_path( filename = "", systemInstall = False ):
+
+    iconPath = os.path.join( get_data_dir(), "icons" )
 
     if systemInstall:
         return( "/usr/share/qytdl/data/icons" )
 
-    ##  Check for Windows
-    if sys.platform == "win32" or sys.platform == "win64":
-        return( "%s\\icons\\%s" % ( get_data_dir(), filename ))
-
-    ##  Otherwise, we assume linux / unix
+    if filename != "":
+        return( os.path.join( iconPath, filename ))
     else:
-        return( "%s/icons/%s" % ( get_data_dir(), filename ))
-
+        return( iconPath )
 
 def image_path( filename = "" ):
 
-    if sys.platform == "win32" or sys.platform == "win64":
-        return( "%s\\images\\%s" % ( get_data_dir(), filename ))
+    imagePath = os.path.join( get_data_dir(), "images" )
 
+    if filename != "":
+        return( os.path.join( imagePath, filename ))
     else:
-        return( "%s/images/%s" % ( get_data_dir(), filename ))
+        return( imagePath )
+
+
+def stylesheets_path( filename = "" ):
+    ssPath = os.path.join( get_data_dir(), "stylesheets" )
+
+    if filename != "":
+        return( os.path.join( ssPath, filename ))
+    else:
+        return( ssPath )
 
 
 def downloads_path():

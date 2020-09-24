@@ -26,3 +26,5 @@
 2019-10-02      1.02    Fixed a bug with writing profiles.  Oops.
 
 2020-04-15      1.1     Fixed another (default) profile writing bug.
+
+2020-09-23		1.2		Added dark and light stylesheets, moved menus around
