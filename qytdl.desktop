@@ -3,6 +3,6 @@ Name=qYoutube-DL
 GenericName=Youtube Downloader
 Comment=Download videos using Youtube-DL
 Exec=qytdl
-Icon=/usr/share/qytdl/data/icons/png/application-icon.png
+Icon=/usr/share/qytdl/data/icons/fallback/png/application-icon.png
 Type=Application
 Categories=Internet;
