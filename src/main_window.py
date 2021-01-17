@@ -209,6 +209,7 @@ class MainWindow( QMainWindow ):
     def import_urls( self ):
 
         dDir = self.mainWidget.destEdit.text()
+
         filename, blank = QFileDialog.getOpenFileName( self, "Import URLs", dDir )
         if filename != "":
             try:

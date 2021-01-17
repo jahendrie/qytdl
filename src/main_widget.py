@@ -446,6 +446,18 @@ class MainWidget( QWidget ):
         os.chdir( currentDirectory )
 
 
+    def confirm_dir( self, dDir ):
+        if not os.path.exists( dDir ):
+            try:
+                print( "Creating directory '%s'" % dDir )
+                os.mkdir( dDir )
+            except (PermissionError, OSError):
+                print( "ERROR:  Cannot create director '%s'.  Aborting." %
+                        dDir )
+                return( False )
+
+        return( True )
+
 
     def start_download( self ):
 
@@ -485,7 +497,15 @@ class MainWidget( QWidget ):
 
             ##  Get current directory then change to the download dir
             prevDir = os.path.abspath( '.' )
-            os.chdir( opts[ "downloadPath" ] )
+
+            ##  Make sure the download path exists and change to it
+            dDir = opts[ "downloadPath" ]
+            if not self.confirm_dir( dDir ):
+                print( "ERROR:  Cannot write to directory '%s'.  Aborting." %
+                        dDir )
+                return( False )
+
+            os.chdir( dDir )
             
             ##  Change the cursor
             QApplication.setOverrideCursor( Qt.WaitCursor )
