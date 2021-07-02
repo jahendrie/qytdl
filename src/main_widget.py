@@ -25,6 +25,7 @@ class MainWidget( QWidget ):
 
         super().__init__()
         self.parent = parent
+        self.debug = self.parent.debug
         self.profile = None
         self.init_UI()
 
@@ -364,6 +365,9 @@ class MainWidget( QWidget ):
 
 
         ##  Call the command
+        if self.debug:
+            print( cmd )
+
         ret = subprocess.call( cmd )
         return( ret != 1 )
 
@@ -386,11 +390,17 @@ class MainWidget( QWidget ):
                 print( "Using fallback profile:\t'%s'" % pro.name )
 
             if pro.mode == "external":
+                if self.debug:
+                    print( "(external download)" )
+
                 if self.external_download( opts, pro, url ):
                     return True
                 else:
                     skipCount += 1
             else:
+                if self.debug:
+                    print( "(standard download)" )
+
                 if self.standard_download( opts, pro, url ):
                     return True
                 else:
@@ -478,6 +488,8 @@ class MainWidget( QWidget ):
         for i in range( self.listWidget.count() ):
             li = self.listWidget.item( i )
             urls.append( li.text() )
+            if self.debug:
+                print( "Adding '%s' to download queue" % li.text() )
 
 
 
@@ -511,16 +523,22 @@ class MainWidget( QWidget ):
             QApplication.setOverrideCursor( Qt.WaitCursor )
 
             ##  Just grab this here for convenience's sake
-            ydl = youtube_dl.YoutubeDL( { "quiet" : True } )
+            if not self.debug:
+                ydl = youtube_dl.YoutubeDL( { "quiet" : True } )
+            else:
+                ydl = youtube_dl.YoutubeDL()
+
             for url in urls:
 
                 ##  Current URL stuff
                 #currentUrl += 1
                 self.totalProgressBar.setValue( currentUrl )
 
-                status.showMessage(
-                        "Downloading %d/%d, please wait..." %
-                        ( currentUrl+1, totalUrls ))
+                msg = ( "Downloading %d/%d, please wait..." %
+                        ( currentUrl+1, totalUrls ) )
+                status.showMessage( msg )
+                if self.debug:
+                    print( msg )
 
                 ##  First off, see if it's a playlist
                 info = ydl.extract_info( url, process = False )

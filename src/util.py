@@ -16,7 +16,7 @@ WINDOW_HEIGHT = 800
 
 
 def qytdl_version():
-    return( "1.3" )
+    return( "1.31" )
 
 def system_install_path():
     return( "/usr/share/qytdl" )

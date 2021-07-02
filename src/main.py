@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #===============================================================================
-#   qytdl   |   version 1.3     |   GPL v3      |   2021-01-17
+#   qytdl   |   version 1.31    |   GPL v3      |   2021-07-02
 #   James Hendrie               |   hendrie.james@gmail.com
 #
 #   PyQt5 front-end to Youtube-DL.
@@ -57,6 +57,7 @@ def print_help():
 def main():
 
     urls = []
+    debug = False
 
     if len( sys.argv ) > 1:
 
@@ -74,6 +75,10 @@ def main():
             rawUrls = sys.stdin.readlines()
             for r in rawUrls:
                 urls.append( r.replace( ' ', '\n', -1 ).strip() )
+
+        ##  If they're trying to use debug mode
+        elif sys.argv[1] == "-d" or sys.argv[1] == "--debug":
+            debug = True
 
         ##  If they're importing URLs
         elif os.path.exists( sys.argv[1] ):
@@ -104,7 +109,8 @@ def main():
     app.setWindowIcon( Icons().get_icon( "application-icon", sysInstall ))
 
 
-    win = MainWindow()
+    win = MainWindow( debug )
+    print( "(Debug mode)" )
 
     if len( urls ) > 0:
         win.load_urls( urls )

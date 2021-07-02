@@ -20,12 +20,15 @@ class MainWindow( QMainWindow ):
     profiles = read_profiles()
     urls = []
 
-    def __init__( self ):
+    def __init__( self, debug = False ):
         super().__init__()
+
+        self.debug = debug
 
         self.icon_paths()
 
         self.init_UI()
+
 
 
     def icon_paths( self ):
