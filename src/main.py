@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #===============================================================================
-#   qytdl   |   version 1.31    |   GPL v3      |   2021-07-02
+#   qytdl   |   version 1.4     |   GPL v3      |   2021-10-25
 #   James Hendrie               |   hendrie.james@gmail.com
 #
 #   PyQt5 front-end to Youtube-DL.
@@ -51,6 +51,7 @@ def print_help():
     print( "Options:" )
     print( " -h or --help\t\tThis help text" )
     print( " -V or --version\tVersion and author info" )
+    print( " -d or --debug\t\tEnable debug mode (verbose output)" )
     print( " - or --stdin\t\tRead URLs from stdin" )
 
 
@@ -110,7 +111,8 @@ def main():
 
 
     win = MainWindow( debug )
-    print( "(Debug mode)" )
+    if debug:
+        print( "(Debug mode)" )
 
     if len( urls ) > 0:
         win.load_urls( urls )

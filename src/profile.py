@@ -16,7 +16,7 @@ class Profile():
     def __init__( self, pro = None ):
 
         ##  Default profile settings
-        self.mode = None
+        self.externalBin = None
         self.params = None
         self.fullParams = None
         self.videoFormat = None
@@ -37,14 +37,11 @@ class Profile():
         ##  The user-friendly name of this profile
         self.name = pro.find( "name" ).text
 
-        ##  Profile's mode
-        mode = pro.find( "mode" )
-        if mode != None:
-            modeText = mode.text.lower()
-            if modeText == "external" or modeText == "internal":
-                self.mode = modeText
-            else:
-                self.mode = "system"
+        ##  Profile's external downloader bin
+        externalBin = pro.find( "external_bin" )
+        if externalBin != None:
+            eText = externalBin.text.lower()
+            self.externalBin = eText
 
         ##  Extra params used by this profile if using external ydl
         params = pro.find( "params" )

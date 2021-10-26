@@ -1,5 +1,5 @@
 ================================================================================
-    qytdl.py    |   version 1.31    |   GPL v3              |   2021-07-02
+    qytdl.py    |   version 1.4     |   GPL v3              |   2021-10-25
     James Hendrie                   |   hendrie dot james at gmail dot com
 ================================================================================
 
@@ -70,6 +70,7 @@ Usage:
 Options
     -h or --help        Prints help text
     -V or --version     Print version and author info
+    -d or --debug       Enable debug mode (verbose output)
     - or --stdin        Read input from stdin
 
 
@@ -85,6 +86,16 @@ Options
 
     qytdl.cfg has the options that the program will launch with, if the file
     exists and can be read.
+
+    Relevant options:
+        download_path       Absolute path to where the videos are downloaded
+        module              Which ydl module to use (youtube_dl, yt-dlp, etc)
+        allow_duplicates    Whether or not to allow duplicate URLs (true/false)
+        playlist_folder     Does a playlist get its own folder (true/false)
+        profile             Default profile that the program starts with
+        fallback            Fallback profiles, IDs separated by commas
+        theme               Which theme to use:  dark, light or default
+
 
     profiles.xml contains a number of profiles that the user can make use of,
     assuming they can be read properly by the program.  This file can be, and is

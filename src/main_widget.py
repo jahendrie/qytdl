@@ -15,6 +15,7 @@ from classes import *
 import sip
 
 import subprocess
+import importlib
 #from PyQt5.QtCore import Qt
 
 
@@ -308,15 +309,15 @@ class MainWidget( QWidget ):
 
     def standard_download( self, opts, profile, url ):
 
-        ####    RE-ENABLE if you want to let it use internal YDL
-        ###  Determine which module we're using
-        #if profile.mode == "internal":
-        #    ydl_module = internal_ydl
-        #else:
-        #    ydl_module = youtube_dl
+        try:
+            ydl_module = importlib.import_module( opts[ "module" ] )
+            if self.debug:
+                print( "Module:\t%s" % opts[ "module" ] )
 
-        ydl_module = youtube_dl
-
+        except ImportError:
+            ydl_module = youtube_dl
+            if self.debug:
+                print( "Module:\tyoutube_dl")
 
         ydl_opts = self.ydl_opts( profile )
 
@@ -334,12 +335,8 @@ class MainWidget( QWidget ):
 
 
     def external_download( self, opts, pro, url ):
-        if opts[ "externalPath" ].lower() == "none":
-            w = "WARNING:  No external youtube-dl path set!  Skipping profile."
-            print( w )
-            return( False )
 
-        cmd = [ opts[ "externalPath" ] ]
+        cmd = [ pro.externalBin ]
 
         ##  If the user wants FULL control over the params
         if( pro.fullParams != None and pro.fullParams != "none"
@@ -389,7 +386,8 @@ class MainWidget( QWidget ):
             if skipCount > 0:
                 print( "Using fallback profile:\t'%s'" % pro.name )
 
-            if pro.mode == "external":
+
+            if pro.externalBin != None:
                 if self.debug:
                     print( "(external download)" )
 
@@ -397,6 +395,7 @@ class MainWidget( QWidget ):
                     return True
                 else:
                     skipCount += 1
+
             else:
                 if self.debug:
                     print( "(standard download)" )
@@ -405,6 +404,7 @@ class MainWidget( QWidget ):
                     return True
                 else:
                     skipCount += 1
+
 
         return False
 

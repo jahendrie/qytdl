@@ -11,8 +11,7 @@ def default_opts():
             "profile" : "auto",
             "fallback" : ["auto"],
             "duplicates" : "false",
-            "mode" : "system",
-            "externalPath" : "none",
+            "module" : "youtube_dl",
             "playlistFolder" : "true",
             "theme" : "default",
             }
@@ -63,17 +62,13 @@ def write_config( opts ):
         cfg[ "DEFAULT" ] = {
                 "# Absolute path to directory where downloads are saved" : None,
                 "download_path" : opts.get( "downloadPath", userPath ),
-                "\n# Absolute path to youtube-dl executable, if needed" : None,
-                "external_path" : opts.get( "externalPath", "none" ),
+                "\n# Which system installation (module) used to download": None,
+                "# (youtube_dl, yt_dlp, etc.)" : None,
+                "module" : opts.get( "module", "youtube_dl" ),
                 "\n# Allow duplicate URLs into queue (true/false)" : None,
                 "allow_duplicates" : opts.get( "duplicates", "false" ),
                 "\n# Each playlist gets its own subdirectory (true/false)" : None,
-                "playlist_folder" : opts.get( "playlistFolder", "true" ),
-                "\n# Mode used to call youtube-dl (overriden by profiles)" : None,
-                "# system: use libraries called from program (default)" : None,
-                "# internal: use libraries distributed with program" : None,
-                "# external: use external youtube-dl executable" : None,
-                "mode" : opts.get( "mode", "system" )
+                "playlist_folder" : opts.get( "playlistFolder", "true" )
                 }
 
         #   Build the fallbacks string
@@ -130,10 +125,9 @@ def read_options( opts ):
     ##  Default section
     section = cfg[ "DEFAULT" ]
     opts[ "downloadPath" ] = section.get( "download_path", userPath )
-    opts[ "externalPath" ] = section.get( "external_path", "none" )
+    opts[ "module" ] = section.get( "module", "youtube_dl" )
     opts[ "duplicates" ] = section.get( "allow_duplicates", "false" )
     opts[ "playlistFolder" ] = section.get( "playlist_folder", "true" )
-    opts[ "mode" ] = section.get( "mode", "system" )
 
     ##  Profiles section
     section = cfg[ "Profiles" ]
