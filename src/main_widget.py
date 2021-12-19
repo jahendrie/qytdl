@@ -266,7 +266,7 @@ class MainWidget( QWidget ):
 
                 #val = 100 * ((y/x) * ( totalUrls/(currentUrl+1)))
                 val = 100.0 * ( x / y )
-                self.currentProgressBar.setValue( val )
+                self.currentProgressBar.setValue( int( val ) )
         except KeyError:
             self.currentProgressBar.setValue( 100 )
 
@@ -440,7 +440,7 @@ class MainWidget( QWidget ):
             status.showMessage(
                     "Downloading playlist entry %d/%d, please wait..." %
                     ( currentVid+1, numVids ))
-            self.currentProgressBar.setValue( currentVid )
+            self.currentProgressBar.setValue( int( currentVid ) )
             currentVid += 1
 
             #profile = self.parent.profiles[ opts[ "profile" ] ]
@@ -532,7 +532,7 @@ class MainWidget( QWidget ):
 
                 ##  Current URL stuff
                 #currentUrl += 1
-                self.totalProgressBar.setValue( currentUrl )
+                self.totalProgressBar.setValue( int( currentUrl ) )
 
                 msg = ( "Downloading %d/%d, please wait..." %
                         ( currentUrl+1, totalUrls ) )
@@ -572,7 +572,7 @@ class MainWidget( QWidget ):
                     sip.delete( li )
                     self.listWidget.setDisabled( True )
 
-                self.totalProgressBar.setValue( currentUrl + 1 )
+                self.totalProgressBar.setValue( int( currentUrl + 1 ) )
                 currentUrl += 1
 
                 ##  Update the free label

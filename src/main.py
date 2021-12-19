@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #===============================================================================
-#   qytdl   |   version 1.4     |   GPL v3      |   2021-10-25
+#   qytdl   |   version 1.41    |   GPL v3      |   2021-12-19
 #   James Hendrie               |   hendrie.james@gmail.com
 #
 #   PyQt5 front-end to Youtube-DL.
