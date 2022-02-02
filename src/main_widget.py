@@ -1,12 +1,14 @@
-import os
+import os, sys
 
 from PyQt5.QtWidgets import ( QWidget, QVBoxLayout, QHBoxLayout, QFileDialog,
         QPushButton, QListWidget, QLineEdit, QLabel, QInputDialog,
-        QProgressBar, QComboBox )
+        QProgressBar, QComboBox, QMenu )
 
 from PyQt5.QtGui import QIcon, QClipboard
-from PyQt5.Qt import QApplication
+from PyQt5.Qt import QApplication, QAction
 from PyQt5.QtCore import Qt
+
+from list_widget import ListWidget
 
 from icons import Icons
 from util import *
@@ -23,14 +25,11 @@ import importlib
 class MainWidget( QWidget ):
 
     def __init__( self, parent = None ):
-
         super().__init__()
         self.parent = parent
         self.debug = self.parent.debug
         self.profile = None
         self.init_UI()
-
-
 
 
     def connect_all( self ):
@@ -66,15 +65,13 @@ class MainWidget( QWidget ):
         self.profileBox.setDisabled( disabled )
 
 
-
-
     def init_UI( self ):
 
         ##  Just to make life easier
         get_icon = Icons().get_icon
 
         ##  Start all of the widgets
-        self.listWidget = QListWidget( self )
+        self.listWidget = ListWidget( self )
 
         ##  The Destination button
         self.destButton = QPushButton( QIcon( get_icon( "folder-open" )), "" )
@@ -225,28 +222,46 @@ class MainWidget( QWidget ):
             self.add_url_to_list( url )
 
 
+    def is_duplicate( self, text ):
+        inList = False
+        for i in range( self.listWidget.count() ):
+            li = self.listWidget.item( i )
+            if li != None and li.text() == text:
+                inList = True
+                break
+
+        return( inList )
+
 
     def add_url_to_list( self, url ):
 
         if self.parent.opts[ "duplicates" ] == "true":
             self.listWidget.addItem( url )
 
-        else:
-            inList = False
-            for i in range( self.listWidget.count() ):
-                li = self.listWidget.item( i )
-                if li != None and li.text() == url:
-                    inList = True
-                    break
-
-            if not inList:
-                self.listWidget.addItem( url )
+        elif not self.is_duplicate( url ):
+            self.listWidget.addItem( url )
 
 
     def remove_item( self ):
         li = self.listWidget.currentItem()
         if li != None:
             sip.delete( li )
+
+
+    def edit_item( self ):
+        li = self.listWidget.currentItem()
+        if li != None:
+            url = li.text()
+            url, ok = QInputDialog.getText( self, "URL:", "URL:",
+                    QLineEdit.Normal, url )
+
+            if ok:
+                if self.parent.opts[ "duplicates" ] == "true":
+                    li.setText( url )
+
+                elif not self.is_duplicate( url ):
+                        li.setText( url )
+
 
 
     def write_config( self ):

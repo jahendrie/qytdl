@@ -36,3 +36,6 @@
 2021-10-25      1.4     Added ability to choose which ydl module to use
 
 2021-12-19      1.41    Fixed bug with the progress bar that could cause crashes
+
+2022-02-01      1.5     Added a right-click context menu for list items, added
+                        the ability to edit entries

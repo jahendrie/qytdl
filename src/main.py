@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 #===============================================================================
-#   qytdl   |   version 1.41    |   GPL v3      |   2021-12-19
+#   qytdl   |   version 1.5     |   GPL v3      |   2022-02-01
 #   James Hendrie               |   hendrie.james@gmail.com
 #
 #   PyQt5 front-end to Youtube-DL.
 #
 #   ---------------------------------------------------------------------------
 #
-#    Copyright (C) 2017-2020 James Hendrie
+#    Copyright (C) 2017-2022 James Hendrie
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
