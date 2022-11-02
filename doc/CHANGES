@@ -39,3 +39,6 @@
 
 2022-02-01      1.5     Added a right-click context menu for list items, added
                         the ability to edit entries
+
+2022-11-02      1.6     Added option to skip reading from a config file, fixed
+                        default profile generation bug

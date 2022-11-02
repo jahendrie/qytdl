@@ -16,6 +16,7 @@ class Profile():
     def __init__( self, pro = None ):
 
         ##  Default profile settings
+        self.mode = None
         self.externalBin = None
         self.params = None
         self.fullParams = None
