@@ -1,5 +1,5 @@
 ================================================================================
-    qytdl.py    |   version 1.5     |   GPL v3              |   2022-02-01
+    qytdl.py    |   version 1.6     |   GPL v3              |   2022-11-02
     James Hendrie                   |   hendrie dot james at gmail dot com
 ================================================================================
 
@@ -71,6 +71,7 @@ Options
     -h or --help        Prints help text
     -V or --version     Print version and author info
     -d or --debug       Enable debug mode (verbose output)
+    -n or --no-config   Don't attempt to read from a config file
     - or --stdin        Read input from stdin
 
 

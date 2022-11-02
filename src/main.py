@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #===============================================================================
-#   qytdl   |   version 1.5     |   GPL v3      |   2022-02-01
+#   qytdl   |   version 1.6     |   GPL v3      |   2022-11-02
 #   James Hendrie               |   hendrie.james@gmail.com
 #
 #   PyQt5 front-end to Youtube-DL.
@@ -52,13 +52,17 @@ def print_help():
     print( " -h or --help\t\tThis help text" )
     print( " -V or --version\tVersion and author info" )
     print( " -d or --debug\t\tEnable debug mode (verbose output)" )
+    print( " -n or --no-config\tDon't attempt to read from a config file" )
     print( " - or --stdin\t\tRead URLs from stdin" )
 
 
 def main():
 
     urls = []
-    debug = False
+    launchOpts = {
+            "debug" : False,
+            "read_config" : True
+            }
 
     if len( sys.argv ) > 1:
 
@@ -79,7 +83,10 @@ def main():
 
         ##  If they're trying to use debug mode
         elif sys.argv[1] == "-d" or sys.argv[1] == "--debug":
-            debug = True
+            launchOpts[ "debug" ] = True
+
+        elif sys.argv[1] == "-n" or sys.argv[1] == "--no-config":
+            launchOpts[ "read_config" ] = False
 
         ##  If they're importing URLs
         elif os.path.exists( sys.argv[1] ):
@@ -110,8 +117,8 @@ def main():
     app.setWindowIcon( Icons().get_icon( "application-icon", sysInstall ))
 
 
-    win = MainWindow( debug )
-    if debug:
+    win = MainWindow( launchOpts )
+    if launchOpts[ "debug" ]:
         print( "(Debug mode)" )
 
     if len( urls ) > 0:

@@ -146,9 +146,11 @@ def read_options( opts ):
 
 
 
-def read_config():
+def read_config( readConfig ):
 
     opts = default_opts()
+    if not readConfig:
+        return( opts )
 
     if not os.path.exists( config_path() ):
         write_config( opts )

@@ -16,14 +16,15 @@ from profile import *
 
 class MainWindow( QMainWindow ):
 
-    opts = read_config()
-    profiles = read_profiles()
     urls = []
 
-    def __init__( self, debug = False ):
+    def __init__( self, launchOpts ):
         super().__init__()
 
-        self.debug = debug
+        self.opts = read_config( launchOpts[ "read_config" ] )
+        self.profiles = read_profiles()
+
+        self.debug = launchOpts[ "debug" ]
 
         self.icon_paths()
 
